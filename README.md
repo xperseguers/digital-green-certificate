@@ -20,11 +20,18 @@ $input = 'HC1:NCFOXNYTSFDHJI89.O%26V$L.BUTRDUV...';
 
 // Extract issuer, issuing date, expiring date, type of vaccine, manufacturer, etc.
 $data = $decoder->decodeFromQR($input);
+```
 
-// Prettify the data so that they are more human-readable (beware: structure may change)
+![Raw data](https://raw.githubusercontent.com/xperseguers/digital-green-certificate/main/resources/data-raw.png)
+
+You may then prettify the data so that they are more human-readable:
+
+```php
 // Basically this returns the exact same data you read in the official Swiss app "Covid Cert"
 $humanReadableData = $decoder->prettify($data);
 ```
+
+![Human-readable data](https://raw.githubusercontent.com/xperseguers/digital-green-certificate/main/resources/data-human.png)
 
 ## Types of Certificates
 

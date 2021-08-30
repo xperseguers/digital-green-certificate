@@ -197,7 +197,7 @@ class Decoder
 
         static $devices = null;
         if ($devices === null) {
-            $devices = json_decode(file_get_contents(__DIR__ . '/data/hsc-common-recognition-rat.json'), true);
+            $devices = json_decode(file_get_contents(__DIR__ . '/../resources/hsc-common-recognition-rat.json'), true);
         }
 
         foreach ($devices['deviceList'] as $device) {
