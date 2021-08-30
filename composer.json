@@ -1,0 +1,31 @@
+{
+    "name": "causal/dgc",
+    "description": "Library to decode Digital Green Certificates as defined by the eHealth Network",
+    "type": "library",
+    "require": {
+        "php": ">= 7.2.0, <= 7.4.99",
+        "ext-zlib": "*",
+        "mhauri/base45": "^0.1.1",
+        "firehed/cbor": "dev-master",
+        "cweagans/composer-patches": "^1.7"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Xavier Perseguers",
+            "email": "xavier@causal.ch"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Causal\\DGC\\": "src/"
+        }
+    },
+    "extra": {
+        "patches": {
+            "firehed/cbor": {
+                "Decode Tag 18": "patches/firehed-cbor-tag18.patch"
+            }
+        }
+    }
+}

@@ -1,0 +1,11 @@
+--- src/Decoder.bak.php	2021-08-30 15:20:14.000000000 +0200
++++ src/Decoder.php	2021-08-30 15:55:38.000000000 +0200
+@@ -198,6 +198,8 @@
+             case 3: // negative bignum
+                 $positive = $this->decodeBigint($tag);
+                 return bcsub('-1', $positive);
++            case 18: // COSE Single Signer Data Object (https://www.iana.org/go/draft-ietf-cose-rfc8152bis-struct-15)
++                return json_encode($this->decode($tag[2]));
+         }
+         // var_dump("tag #$tagId");
+         // var_dump($tag);
