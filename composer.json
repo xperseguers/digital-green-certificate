@@ -6,7 +6,7 @@
         "php": ">= 7.2.0, <= 7.4.99",
         "ext-zlib": "*",
         "mhauri/base45": "^0.1.1",
-        "firehed/cbor": "dev-master",
+        "firehed/cbor": "dev-master#eef67b1b5fdf90a3688fc8d9d13afdaf342c4b80",
         "cweagans/composer-patches": "^1.7"
     },
     "license": "MIT",
