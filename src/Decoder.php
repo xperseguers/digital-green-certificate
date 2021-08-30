@@ -29,7 +29,7 @@ class Decoder
             'issuer' => $rawData[1],
             'issuingDate' => date('c', $rawData[6]),
             'expiringDate' => date('c', $rawData[4]),
-            'certificates' => [],
+            'certificate' => [],
         ];
 
         $person = [
@@ -41,7 +41,8 @@ class Decoder
         ];
 
         if (array_key_exists('v', $certificate)) {
-            $data['certificates']['vaccination'] = [
+            $data['certificate'] = [
+                'type' => 'vaccination',
                 'person' => $person,
                 'info' => [
                     'singleDoses' => $certificate['v'][0]['sd'],
@@ -56,7 +57,8 @@ class Decoder
                 ],
             ];
         } elseif (array_key_exists('t', $certificate)) {
-            $data['certificates']['test'] = [
+            $data['certificate'] = [
+                'type' => 'test',
                 'person' => $person,
                 'info' => [
                     'diseaseOrAgentTargeted' => $this->getDiseaseOrAgentTargeted($certificate['t'][0]['tg'] ?? ''),
@@ -72,7 +74,8 @@ class Decoder
                 ],
             ];
         } elseif (array_key_exists('r', $certificate)) {
-            $data['certificates']['recovery'] = [
+            $data['certificate'] = [
+                'type' => 'recovery',
                 'person' => $person,
                 'info' => [
                     'validFrom' => $certificate['r'][0]['df'] ?? null,

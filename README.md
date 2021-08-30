@@ -68,26 +68,25 @@ $humanReadableData = $decoder->prettify($data);
   issuer: "DE",
   issuingDate: "2021-05-29T21:21:13+02:00",
   expiringDate: "2022-01-28T08:47:53+01:00",
-  certificates: {
-    vaccination: {
-      person: {
-        familyName: "Mustermann",
-        givenName: "Erika",
-        familyNameTransliterated: "MUSTERMANN",
-        givenNameTransliterated: "ERIKA",
-        dateOfBirth: "1964-08-12"
-      },
-      info: {
-        singleDoses: 2,
-        diseaseOrAgentTargeted: "COVID-19",
-        vaccineType: "SARS-CoV2 mRNA vaccine",
-        product: "COVID-19 Vaccine Moderna",
-        manufacturer: "Moderna Biotech Spain S.L.",
-        date: "2021-05-29",
-        country: "DE",
-        issuer: "Robert Koch-Institut",
-        id: "URN:UVCI:01DE/IZ12345A/5CWLU12RNOB9RXSEOP6FG8#W"
-      }
+  certificate: {
+    type: "vaccination",
+    person: {
+      familyName: "Mustermann",
+      givenName: "Erika",
+      familyNameTransliterated: "MUSTERMANN",
+      givenNameTransliterated: "ERIKA",
+      dateOfBirth: "1964-08-12"
+    },
+    info: {
+      singleDoses: 2,
+      diseaseOrAgentTargeted: "COVID-19",
+      vaccineType: "SARS-CoV2 mRNA vaccine",
+      product: "COVID-19 Vaccine Moderna",
+      manufacturer: "Moderna Biotech Spain S.L.",
+      date: "2021-05-29",
+      country: "DE",
+      issuer: "Robert Koch-Institut",
+      id: "URN:UVCI:01DE/IZ12345A/5CWLU12RNOB9RXSEOP6FG8#W"
     }
   }
 }
