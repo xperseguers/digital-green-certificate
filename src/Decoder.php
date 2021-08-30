@@ -63,7 +63,7 @@ class Decoder
                     'type' => $this->getType($certificate['t'][0]['tt'] ?? null),
                     'name' => $certificate['t'][0]['nm'] ?? null,
                     'device' => $this->getDevice($certificate['t'][0]['ma'] ?? null),
-                    'result' => $certificate['t'][0]['tr'] ?? null,
+                    'result' => $this->getTestResult($certificate['t'][0]['tr'] ?? null),
                     'centre' => $certificate['t'][0]['tc'] ?? null,
                     'date' => $certificate['t'][0]['sc'] ?? null,
                     'country' => $certificate['t'][0]['co'],
@@ -207,5 +207,17 @@ class Decoder
         }
 
         return 'Unknown: ' . $code;
+    }
+
+    protected function getTestResult(?string $code): ?string
+    {
+        switch ($code) {
+            case '260415000':
+                return 'Not detected';
+            case '260373001':
+                return 'Detected';
+        }
+
+        return !empty($code) ? 'Unknown: ' . $code : null;
     }
 }
