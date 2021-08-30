@@ -22,7 +22,39 @@ $input = 'HC1:NCFOXNYTSFDHJI89.O%26V$L.BUTRDUV...';
 $data = $decoder->decodeFromQR($input);
 ```
 
-![Raw data](https://raw.githubusercontent.com/xperseguers/digital-green-certificate/main/resources/data-raw.png)
+```json
+{
+  1: "DE",
+  4: 1643356073,
+  6: 1622316073,
+  -260: {
+    1: {
+      v: [
+        {
+          ci: "URN:UVCI:01DE/IZ12345A/5CWLU12RNOB9RXSEOP6FG8#W",
+          co: "DE",
+          dn: 2,
+          dt: "2021-05-29",
+          is: "Robert Koch-Institut",
+          ma: "ORG-100031184",
+          mp: "EU/1/20/1507",
+          sd: 2,
+          tg: "840539006",
+          vp: "1119349007"
+        }
+      ],
+      dob: "1964-08-12",
+      nam: {
+        fn: "Mustermann",
+        gn: "Erika",
+        fnt: "MUSTERMANN",
+        gnt: "ERIKA"
+      },
+      ver: "1.0.0"
+    }
+  }
+}
+```
 
 You may then prettify the data so that they are more human-readable:
 
@@ -31,7 +63,35 @@ You may then prettify the data so that they are more human-readable:
 $humanReadableData = $decoder->prettify($data);
 ```
 
-![Human-readable data](https://raw.githubusercontent.com/xperseguers/digital-green-certificate/main/resources/data-human.png)
+```json
+{
+  issuer: "DE",
+  issuingDate: "2021-05-29T21:21:13+02:00",
+  expiringDate: "2022-01-28T08:47:53+01:00",
+  certificates: {
+    vaccination: {
+      person: {
+        familyName: "Mustermann",
+        givenName: "Erika",
+        familyNameTransliterated: "MUSTERMANN",
+        givenNameTransliterated: "ERIKA",
+        dateOfBirth: "1964-08-12"
+      },
+      info: {
+        singleDoses: 2,
+        diseaseOrAgentTargeted: "COVID-19",
+        vaccineType: "SARS-CoV2 mRNA vaccine",
+        product: "COVID-19 Vaccine Moderna",
+        manufacturer: "Moderna Biotech Spain S.L.",
+        date: "2021-05-29",
+        country: "DE",
+        issuer: "Robert Koch-Institut",
+        id: "URN:UVCI:01DE/IZ12345A/5CWLU12RNOB9RXSEOP6FG8#W"
+      }
+    }
+  }
+}
+```
 
 ## Types of Certificates
 
