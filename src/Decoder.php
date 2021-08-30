@@ -56,7 +56,7 @@ class Decoder
                 ],
             ];
         } elseif (array_key_exists('t', $certificate)) {
-            $data['certificates']['recovery'] = [
+            $data['certificates']['test'] = [
                 'person' => $person,
                 'info' => [
                     'diseaseOrAgentTargeted' => $this->getDiseaseOrAgentTargeted($certificate['t'][0]['tg'] ?? ''),
