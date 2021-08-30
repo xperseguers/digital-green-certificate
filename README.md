@@ -26,6 +26,14 @@ $data = $decoder->decodeFromQR($input);
 $humanReadableData = $decoder->prettify($data);
 ```
 
+## Types of Certificates
+
+Following types of certificates are supported:
+
+- Vaccination certificate
+- Test certificate
+- Recovery certificate
+
 ## Disclaimer
 
 - There is currently NO CHECK of the digital signature (it is not clear at the moment whether
@@ -37,6 +45,7 @@ $humanReadableData = $decoder->prettify($data);
 
 - https://ec.europa.eu/health/sites/default/files/ehealth/docs/digital-green-certificates_v3_en.pdf
 - https://ec.europa.eu/health/sites/default/files/ehealth/docs/digital-green-certificates_dt-specifications_en.pdf
+- https://covid-19-diagnostics.jrc.ec.europa.eu/devices/hsc-common-recognition-rat
 
 ## License
 

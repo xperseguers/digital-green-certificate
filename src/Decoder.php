@@ -23,41 +23,67 @@ class Decoder
 
     public function prettify(array $rawData): array
     {
-        // TODO: Add support for multiple vaccines and multiple types of certificates:
-        //       1 = vaccination certificate
-        //       2 = test certificate
-        //       3 = certificate of recovery
-
-        // 1 = "vaccination certificate"
         $certificate = $rawData[-260][1];
 
         $data = [
             'issuer' => $rawData[1],
             'issuingDate' => date('c', $rawData[6]),
             'expiringDate' => date('c', $rawData[4]),
-            'certificates' => [
-                'vaccination' => [
-                    'person' => [
-                        'familyName' => $certificate['nam']['fn'],
-                        'givenName' => $certificate['nam']['gn'],
-                        'familyNameTransliterated' => $certificate['nam']['fnt'],
-                        'givenNameTransliterated' => $certificate['nam']['gnt'],
-                        'dateOfBirth' => $certificate['dob'],
-                    ],
-                    'vaccine' => [
-                        'singleDoses' => $certificate['v'][0]['sd'],
-                        'diseaseOrAgentTargeted' => $this->getDiseaseOrAgentTargeted($certificate['v'][0]['tg']),
-                        'vaccineType' => $this->getVaccineType($certificate['v'][0]['vp']),
-                        'product' => $this->getProduct($certificate['v'][0]['mp']),
-                        'manufacturer' => $this->getManufacturer($certificate['v'][0]['ma']),
-                        'date' => $certificate['v'][0]['dt'],
-                        'country' => $certificate['v'][0]['co'],
-                        'issuer' => $certificate['v'][0]['is'],
-                        'id' => $certificate['v'][0]['ci'],
-                    ],
-                ],
-            ],
+            'certificates' => [],
         ];
+
+        $person = [
+            'familyName' => $certificate['nam']['fn'],
+            'givenName' => $certificate['nam']['gn'],
+            'familyNameTransliterated' => $certificate['nam']['fnt'],
+            'givenNameTransliterated' => $certificate['nam']['gnt'],
+            'dateOfBirth' => $certificate['dob'],
+        ];
+
+        if (array_key_exists('v', $certificate)) {
+            $data['certificates']['vaccination'] = [
+                'person' => $person,
+                'info' => [
+                    'singleDoses' => $certificate['v'][0]['sd'],
+                    'diseaseOrAgentTargeted' => $this->getDiseaseOrAgentTargeted($certificate['v'][0]['tg'] ?? ''),
+                    'vaccineType' => $this->getVaccineType($certificate['v'][0]['vp'] ?? ''),
+                    'product' => $this->getProduct($certificate['v'][0]['mp'] ?? ''),
+                    'manufacturer' => $this->getManufacturer($certificate['v'][0]['ma'] ?? ''),
+                    'date' => $certificate['v'][0]['dt'] ?? null,
+                    'country' => $certificate['v'][0]['co'],
+                    'issuer' => $certificate['v'][0]['is'],
+                    'id' => $certificate['v'][0]['ci'],
+                ],
+            ];
+        } elseif (array_key_exists('t', $certificate)) {
+            $data['certificates']['recovery'] = [
+                'person' => $person,
+                'info' => [
+                    'diseaseOrAgentTargeted' => $this->getDiseaseOrAgentTargeted($certificate['t'][0]['tg'] ?? ''),
+                    'type' => $this->getType($certificate['t'][0]['tt'] ?? null),
+                    'name' => $certificate['t'][0]['nm'] ?? null,
+                    'device' => $this->getDevice($certificate['t'][0]['ma'] ?? null),
+                    'result' => $certificate['t'][0]['tr'] ?? null,
+                    'centre' => $certificate['t'][0]['tc'] ?? null,
+                    'date' => $certificate['t'][0]['sc'] ?? null,
+                    'country' => $certificate['t'][0]['co'],
+                    'issuer' => $certificate['t'][0]['is'],
+                    'id' => $certificate['t'][0]['ci'],
+                ],
+            ];
+        } elseif (array_key_exists('r', $certificate)) {
+            $data['certificates']['recovery'] = [
+                'person' => $person,
+                'info' => [
+                    'validFrom' => $certificate['r'][0]['df'] ?? null,
+                    'validUntil' => $certificate['r'][0]['du'] ?? null,
+                    'date' => $certificate['r'][0]['fr'] ?? null,
+                    'country' => $certificate['r'][0]['co'],
+                    'issuer' => $certificate['r'][0]['is'],
+                    'id' => $certificate['r'][0]['ci'],
+                ],
+            ];
+        }
 
         return $data;
     }
@@ -72,7 +98,7 @@ class Decoder
         return 'Unknown: ' . $code;
     }
 
-    protected function getVaccineType(string $code): string
+    protected function getVaccineType(?string $code): ?string
     {
         switch ($code) {
             case '1119305005':
@@ -83,10 +109,10 @@ class Decoder
                 return 'covid-19 vaccines';
         }
 
-        return 'Unknown: ' . $code;
+        return !empty($code) ? 'Unknown: ' . $code : null;
     }
 
-    protected function getProduct(string $code): string
+    protected function getProduct(?string $code): ?string
     {
         switch ($code) {
             case 'EU/1/20/1528':
@@ -112,10 +138,10 @@ class Decoder
                 return $code;
         }
 
-        return 'Unknown: ' . $code;
+        return !empty($code) ? 'Unknown: ' . $code : null;
     }
 
-    protected function getManufacturer(string $code): string
+    protected function getManufacturer(?string $code): ?string
     {
         switch ($code) {
             case 'ORG-100001699':
@@ -146,6 +172,38 @@ class Decoder
                 return 'Sinovac Biotech';
             case 'BharatBiotech':
                 return 'Bharat Biotech';
+        }
+
+        return !empty($code) ? 'Unknown: ' . $code : null;
+    }
+
+    protected function getType(?string $code): ?string
+    {
+        switch ($code) {
+            case 'LP217198-3':
+                return 'Rapid immunoassay';
+            case 'LP6464-4':
+                return 'Nucleic acid amplification with probe detection';
+        }
+
+        return !empty($code) ? 'Unknown: ' . $code : null;
+    }
+
+    protected function getDevice(?string $code): ?string
+    {
+        if (empty($code)) {
+            return null;
+        }
+
+        static $devices = null;
+        if ($devices === null) {
+            $devices = json_decode(file_get_contents(__DIR__ . '/data/hsc-common-recognition-rat.json'), true);
+        }
+
+        foreach ($devices['deviceList'] as $device) {
+            if ($device['id_device'] === $code) {
+                return $device['commercial_name'];
+            }
         }
 
         return 'Unknown: ' . $code;
